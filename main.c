@@ -26,8 +26,6 @@ unsigned int hash(char* key) {
 		result += key[i];
 	}
 
-	printf("key: %d", result % TABLE_MAX_SIZE);
-
 	return result % TABLE_MAX_SIZE;
 }
 
@@ -37,6 +35,25 @@ HashTable* initTable(){
 	table->count = 0;
 	table->nodes = malloc(sizeof(HashNode) * TABLE_MAX_SIZE);
 	return table;
+}
+
+void freeTable(HashTable* table){
+	if (table == NULL) return;
+
+	for (int i = 0; i < TABLE_MAX_SIZE; i++) {
+		HashNode* node = table->nodes[i];
+
+		while (node != NULL) {
+			HashNode* temp = node; 
+			node = node->next;
+			free(temp->key);
+			free(temp->phone);
+			free(temp);
+		}
+	}
+
+	free(table->nodes);
+	free(table);
 }
 
 
@@ -162,5 +179,6 @@ int main() {
 		}
 	} while (opcao != 0);
 
+	freeTable(table);
 	return 0;
 }
